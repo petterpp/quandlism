@@ -479,17 +479,28 @@
       ctx.strokeStyle = this.color();
       ctx.stroke();
       ctx.closePath();
+
     };
+	
     line.drawPathFromIndicies = function(ctx, xS, yS, start, end, lineWidth) {
       var i, _i;
       if (!this.visible()) {
         return;
       }
+	  if(this.dateAt(start) > this.dates()[0] && xS(this.dateAt(start)) > 0 ) {
+	    start = updateStartVal(this, xS, start);
+	  }
+
+	  if(this.dateAt(end) < this.dates()[this.dates().length-1] && xS(this.dateAt(end)) < ctx.canvas.width){
+	    end = updateEndVal(this, xS, end, ctx.canvas.width);
+	  }
+	  
       ctx.beginPath();
       for (i = _i = start; start <= end ? _i <= end : _i >= end; i = start <= end ? ++_i : --_i) {
         if (this.valueAt(i) == null) {
           continue;
         }
+		
         ctx.lineTo(xS(this.dateAt(i)), yS(this.valueAt(i)));
       }
       ctx.lineWidth = lineWidth;
@@ -497,6 +508,23 @@
       ctx.stroke();
       return ctx.closePath();
     };
+
+	updateStartVal = function(obj, xS, start){
+		start--;
+		if (obj.dateAt(start) > obj.dates()[0] && xS(obj.dateAt(start)) > 0)
+			updateStartVal(obj, xS, start);
+		else
+			return start;
+	};
+	
+	updateEndVal = function(obj, xS, end, width){
+		end++;
+		if (obj.dateAt(end) < obj.dates()[obj.dates().length-1] && xS(obj.dateAt(end)) < width)
+			updateEndVal(obj, xS, end, width);
+		else
+			return end;
+	};
+
     line.getClosestDataPoint = function(date) {
       var index;
       index = this.getClosestIndex(date);
@@ -602,7 +630,7 @@
     lines = [];
     line = null;
     width = Math.floor(context.w() - quandlism_yaxis_width - 2);
-    height = context.utility().stageHeight();
+    height = Math.floor(context.h() * quandlism_stage.h);
     xScale = d3.time.scale();
     yScale = d3.scale.linear();
     xAxis = d3.svg.axis().orient('bottom').scale(xScale);
@@ -630,7 +658,7 @@
       yAxisDOM.attr('class', 'y axis');
       yAxisDOM.attr('id', "y-axis-" + canvasId);
       yAxisDOM.attr('width', quandlism_yaxis_width);
-      yAxisDOM.attr('height', height);
+      yAxisDOM.attr('height', Math.floor(context.h() * quandlism_stage.h));
       yAxisDOM.attr("style", "position: absolute; left: 0px; top: 0px;");
       canvas = selection.append('canvas');
       canvas.attr('width', width);
@@ -645,8 +673,8 @@
       xAxisDOM.attr('class', 'x axis');
       xAxisDOM.attr('id', "x-axis-" + canvasId);
       xAxisDOM.attr('width', Math.floor(context.w() - quandlism_yaxis_width));
-      xAxisDOM.attr('height', context.utility().xAxisHeight());
-      xAxisDOM.attr('style', "position: absolute; left: " + quandlism_yaxis_width + "px; top: " + height + "px");
+      xAxisDOM.attr('height', Math.floor(context.h() * quandlism_xaxis.h));
+      xAxisDOM.attr('style', "position: absolute; left: " + quandlism_yaxis_width + "px; top: " + (context.h() * quandlism_stage.h) + "px");
       setScales = function() {
         var unitsObj, _yMax, _yMin;
         if (!(context.yAxisMax() && context.yAxisMin())) {
@@ -808,13 +836,12 @@
       }
       context.on('respond.stage', function() {
         ctx.clearRect(0, 0, width, height);
-        width = Math.floor(context.w() - quandlism_yaxis_width - 2);
-        height = context.utility().stageHeight();
+        width = Math.floor(context.w() - quandlism_yaxis_width - 1);
+        height = Math.floor(context.h() * quandlism_stage.h);
         canvas.attr('width', width);
         canvas.attr('height', height);
         yAxisDOM.attr('width', quandlism_yaxis_width);
         xAxisDOM.attr('width', Math.floor(context.w() - quandlism_yaxis_width));
-        xAxisDOM.attr('height', Math.floor(context.utility().xAxisHeight()));
         setScales();
         draw();
       });
@@ -1570,20 +1597,6 @@
         return null;
       }
       return date.valueOf();
-    };
-    utility.stageHeight = function() {
-      if (context.dombrush() != null) {
-        return quandlism_stage.h * context.h();
-      } else {
-        return context.h() * 0.90;
-      }
-    };
-    utility.xAxisHeight = function() {
-      if (context.dombrush() != null) {
-        return quandlism_xaxis.h * context.h();
-      } else {
-        return context.h() * 0.10;
-      }
     };
     return utility;
   };
