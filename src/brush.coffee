@@ -195,7 +195,11 @@ QuandlismContext_.brush = () ->
           dateStart = d
         
       # Before dispatching to stage, reset the y min and max 
-      context.adjust dateStart, line.getClosestIndex(dateStart), dateEnd, line.getClosestIndex(dateEnd)
+      
+	  startVal = line.getClosestIndex(dateStart)
+      endVal = line.getClosestIndex(dateEnd)
+
+      context.adjust line.dateAt(startVal), startVal, line.dateAt(endVal), endVal
       return
       
     # Resets the state of the brush control
