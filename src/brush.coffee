@@ -195,10 +195,8 @@ QuandlismContext_.brush = () ->
           dateStart = d
         
       # Before dispatching to stage, reset the y min and max 
-      
-	  startVal = line.getClosestIndex(dateStart)
+      startVal = line.getClosestIndex(dateStart)
       endVal = line.getClosestIndex(dateEnd)
-
       context.adjust line.dateAt(startVal), startVal, line.dateAt(endVal), endVal
       return
       
