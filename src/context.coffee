@@ -79,7 +79,7 @@ quandlism.context = () ->
   
   # use jQuery to get height and width of context container  
   context.build = () =>
-    w = $(dom).width()
+    w = $(dom).width() - 50
     h = $(dom).height()
     context
   
@@ -239,7 +239,7 @@ quandlism.context = () ->
   d3.select(window).on 'resize', () =>
     d3.event.preventDefault()
     if dom
-      w0 = $(dom).width()
+      w0 = $(dom).width() - 50
       h0 = $(dom).height()
       if w isnt w0 or h isnt h0
         w = w0

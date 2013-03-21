@@ -69,7 +69,7 @@ QuandlismContext_.brush = () ->
     # 
     # Returns null
     setScales = () =>
-      yScale.domain context.utility().getExtent lines, null, null 
+      yScale.domain context.utility().getBrushExtent lines, null, null 
       yScale.range [height-context.padding(), context.padding()]
 
       xScale.range [context.padding(), width-context.padding()]

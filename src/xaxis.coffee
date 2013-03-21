@@ -30,7 +30,7 @@ QuandlismContext_.xaxis = () ->
     changeScale = () =>
       extent = [lines[0].dateAt(0), lines[0].dateAt(lines[0].length()-1)]
       parseDate = context.utility().parseDate(lines[0].dateAt(0))
-      scale.domain [parseDate(extent[0]), parseDate(extent[1])]
+      scale.domain [parseDate(extent[0][0]), parseDate(extent[0][1])]
       axis_.tickFormat d3.time.format('%b %d, %Y')
       axis_.ticks Math.floor width / 150, 0, 0
       scale.range [0, width]
@@ -60,7 +60,7 @@ QuandlismContext_.xaxis = () ->
         x2 = if x2 > lines[0].length()-1 then lines[0].length()-1 else x2
         x1 = if x1 < 0 then 0 else x1
         extent = [lines[0].dateAt(x1), lines[0].dateAt(x2)]
-        scale.domain [parseDate(extent[0]), parseDate(extent[1])]
+        scale.domain [parseDate(extent[0][0]), parseDate(extent[0][1])]
         update()
 
       

@@ -20,7 +20,7 @@ QuandlismContext_.yaxis = () ->
     axis_.tickSize 5, 3, 0
     update = () =>
       extent = context.utility().getExtent lines, xStart, xEnd
-      scale.domain [extent[0], extent[1]]
+      scale.domain [extent[0][0], extent[0][1]]
       yaxis.remove()
       
       g = selection.append 'svg'

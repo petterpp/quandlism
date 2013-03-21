@@ -82,10 +82,34 @@ QuandlismContext_.utility = () ->
   #
   # Returns an array with two values
   utility.getExtent = (lines, start, end) =>
+    min = Infinity
+    max = -Infinity
+    for line in lines
+      val = line.extent(start, end)[1]
+      continue  if val is Infinity or val is -Infinity
+      min = val  if val < min
+      max = val  if val > max
+    exes_min = (->
+      _results = []
+      for line in lines
+        min_dis = Math.abs(min - line.extent(start, end)[1])
+        max_dis = Math.abs(max - line.extent(start, end)[1])
+        _results.push line.extent(start, end)  if min_dis < max_dis or min_dis is 0 or max / min < 2
+      _results
+    )()
+    exes_max = (->
+      _results = []
+      for line in lines
+        min_dis = Math.abs(min - line.extent(start, end)[1])
+        max_dis = Math.abs(max - line.extent(start, end)[1])
+        _results.push line.extent(start, end)  if min_dis > max_dis or max_dis is 0
+      _results
+    )()
+    [ [ d3.min(exes_min, (m) -> m[0]), d3.max(exes_min, (m) -> m[1]) ], [ d3.min(exes_max, (m) -> m[0]), d3.max(exes_max, (m) -> m[1]) ] ]
+ 
+  utility.getBrushExtent = (lines, start, end) =>
     exes = (line.extent start, end for line in lines)
     [d3.min(exes, (m) -> m[0]), d3.max(exes, (m) -> m[1])]
- 
- 
   # Calculates the extend of the set of lines, using a date range, rather than indicies
   #
   # lines - An array of quandlism.line objects
