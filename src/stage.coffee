@@ -191,8 +191,14 @@ QuandlismContext_.stage = () ->
         lineWidth = if j is lineId then 3 else 1.5
         if extent[1][1] / extent[0][1] > 2 and Math.abs(line.extent(indexStart, indexEnd)[1] - extent[1][1]) < Math.abs(line.extent(indexStart, indexEnd)[1] - extent[0][1])
           line.drawPathFromIndicies ctx, xScale, ySecondScale, indexStart, indexEnd, lineWidth
+          for item, j in d3.select(context.domlegend()).selectAll('a')[0]
+            origin_text = item.text
+            item.text = (origin_text + "(right)")  if line.name() is origin_text
         else
           line.drawPathFromIndicies ctx, xScale, yScale, indexStart, indexEnd, lineWidth
+          for item, j in d3.select(context.domlegend()).selectAll('a')[0]
+            origin_text = item.text
+            item.text = line.name()  unless origin_text.indexOf(line.name()) is -1
         if ((indexEnd-indexStart) < threshold)
           line.drawPointAtIndex ctx, xScale, yScale, i, 2 for i in [indexStart..indexEnd]
           

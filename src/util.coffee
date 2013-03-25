@@ -89,24 +89,23 @@ QuandlismContext_.utility = () ->
       continue  if val is Infinity or val is -Infinity
       min = val  if val < min
       max = val  if val > max
-    exes_min = (->
-      _results = []
-      for line in lines
-        min_dis = Math.abs(min - line.extent(start, end)[1])
-        max_dis = Math.abs(max - line.extent(start, end)[1])
-        _results.push line.extent(start, end)  if min_dis < max_dis or min_dis is 0 or max / min < 2
-      _results
-    )()
-    exes_max = (->
-      _results = []
-      for line in lines
-        min_dis = Math.abs(min - line.extent(start, end)[1])
-        max_dis = Math.abs(max - line.extent(start, end)[1])
-        _results.push line.extent(start, end)  if min_dis > max_dis or max_dis is 0
-      _results
-    )()
+    exes_min = utility.getGroupMinMaxList(lines, min, max, start, end)[0]
+    exes_max = utility.getGroupMinMaxList(lines, min, max, start, end)[1]
     [ [ d3.min(exes_min, (m) -> m[0]), d3.max(exes_min, (m) -> m[1]) ], [ d3.min(exes_max, (m) -> m[0]), d3.max(exes_max, (m) -> m[1]) ] ]
- 
+  
+  utility.getGroupMinMaxList = (lines, min, max, start, end) =>
+    _results = []
+    _results_min = []
+    _results_max = []
+    for line in lines
+      min_dis = Math.abs(min - line.extent(start, end)[1])
+      max_dis = Math.abs(max - line.extent(start, end)[1])
+      _results_min.push line.extent(start, end)  if min_dis < max_dis or min_dis is 0 or max / min < 2
+      _results_max.push line.extent(start, end)  if min_dis > max_dis or max_dis is 0
+    _results.push _results_min
+    _results.push _results_max	
+    _results
+
   utility.getBrushExtent = (lines, start, end) =>
     exes = (line.extent start, end for line in lines)
     [d3.min(exes, (m) -> m[0]), d3.max(exes, (m) -> m[1])]
