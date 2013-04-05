@@ -351,7 +351,20 @@ QuandlismContext_.brush = () ->
       setBrushClass ''
       saveState()  
       return
-      
+    
+    # On double click expand brush
+    canvas.on "dblclick", (e) ->
+      d3.event.preventDefault()
+      m = d3.mouse(this)
+      touchPoint = m[0]
+      if isDraggingLocation(m[0]) or isLeftHandle(m[0]) or isRightHandle(m[0])
+        dateStart = _.first(line.dates())
+        dateEnd = _.last(line.dates())
+        drawStart = xScale(dateStart)
+        drawEnd = xScale(dateEnd)
+        context.toggle()
+        return
+
     # Calculate various points for animating dragging and stretching
     canvas.on 'mousemove', (e) ->
       m = d3.mouse @
