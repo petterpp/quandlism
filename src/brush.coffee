@@ -362,6 +362,10 @@ QuandlismContext_.brush = () ->
         dateEnd = _.last(line.dates())
         drawStart = xScale(dateStart)
         drawEnd = xScale(dateEnd)
+        setPrevious 'dateStart', dateStart
+        setPrevious 'dateEnd', dateEnd
+        setPrevious 'drawStart', drawStart
+        setPrevious 'drawEnd', drawEnd
         context.toggle()
         return
 
